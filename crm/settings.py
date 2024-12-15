@@ -1,4 +1,5 @@
 from decouple import config
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'authentication',
     'eventhub',
 ]
@@ -72,9 +74,15 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD', default='default_password'),
         'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='3306'),
+    },
+    'lesson': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
+if config('USE_LESSON_DB', default='false').lower() == 'true':
+    DATABASES['default'] = DATABASES['lesson']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
