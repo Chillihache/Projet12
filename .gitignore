@@ -1,0 +1,10 @@
+bin
+include
+lib
+.Python
+.envrc
+env/
+.idea/
+.env
+__pycache__
+
