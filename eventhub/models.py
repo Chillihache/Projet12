@@ -1,47 +1,50 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
 
 
-class UserManager(BaseUserManager):
-    # def create_user(self, email, password=None, **extra_fields):
-    #     if not email:
-    #         raise ValueError("L'email doit être défini")
-    #     email = self.normalize_email(email)
-    #     user = self.model(email=email, **extra_fields)
-    #     user.set_password(password)
-    #     user.save(using=self._db)
-    #     return user
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("L'adresse email est obligatoire")
+        if not extra_fields.get('employee_number'):
+            raise ValueError("Le numéro d'employé est obligatoire")
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
 
-        extra_fields.setdefault("username", email)
+        if not extra_fields.get('is_staff'):
+            raise ValueError("Le superutilisateur doit avoir is_staff=True.")
+        if not extra_fields.get('is_superuser'):
+            raise ValueError("Le superutilisateur doit avoir is_superuser=True.")
 
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractUser):
-    email = models.EmailField(unique=True, verbose_name="Adresse email")
-    employee_number = models.PositiveIntegerField(
-        unique=True,
-        verbose_name="Numéro d'employé"
-    )
+class CustomUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True, max_length=255)
+    password = models.CharField(max_length=128)
+    employee_number = models.CharField(unique=True, max_length=50)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
-    username = models.CharField(max_length=255, unique=False, blank=True)
+    objects = CustomUserManager()
 
-    first_name = models.CharField(max_length=30, blank=False, null=False)
-    last_name = models.CharField(max_length=30, blank=False, null=False)
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name", "employee_number"]
-
-    objects = UserManager()
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['employee_number', 'first_name', 'last_name']
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.email
 
 
 class Client(models.Model):
@@ -53,7 +56,7 @@ class Client(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Creation date")
     update_date = models.DateTimeField(auto_now=True, verbose_name="Last update date")
 
-    sales_contact = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Sales contact")
+    sales_contact = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name="Sales contact")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.company_name}"
@@ -85,7 +88,7 @@ class Event(models.Model):
     event_date_start = models.DateTimeField(verbose_name="Event date start")
     event_date_end = models.DateTimeField(verbose_name="Event date end")
 
-    support_contact = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Support contact")
+    support_contact = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name="Support contact")
     location = models.CharField(max_length=100, verbose_name="Location")
     attendees = models.PositiveIntegerField(verbose_name="Number of attendees")
     notes = models.TextField(verbose_name="Notes")

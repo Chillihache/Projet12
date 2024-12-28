@@ -1,25 +1,31 @@
 from django.contrib import admin
-from eventhub.models import Client, Contract, Event, User
-from django.contrib import admin
+from eventhub.models import Client, Contract, Event, CustomUser
 from django.contrib.auth.admin import UserAdmin
-from .forms import UserCreationForm, UserChangeForm
+from eventhub.forms import CustomUserCreationForm, CustomUserChangeForm
 
-class UserAdmin(UserAdmin):
-    add_form = UserCreationForm
-    form = UserChangeForm
-    model = User
-    list_display = ('username', 'email', 'employee_number', 'is_staff', 'is_active')
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
 
+    list_display = ['email', 'employee_number', 'first_name', 'last_name', 'is_staff']
+    list_filter = ['is_staff', 'is_active']
+    ordering = ['email']
+
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        ('Informations personnelles', {'fields': ('first_name', 'last_name', 'employee_number')}),
+        ('Permissions', {'fields': ('groups', 'is_active', 'is_staff', 'is_superuser')}),
+    )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_active', 'employee_number'),
+            'fields': ('email', 'password1', 'password2', 'employee_number', 'first_name', 'last_name',
+                       'is_active', 'is_staff'),
         }),
     )
 
-
-
+admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Client)
 admin.site.register(Contract)
 admin.site.register(Event)
-admin.site.register(User, UserAdmin)
