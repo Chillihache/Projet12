@@ -90,7 +90,7 @@ class Event(models.Model):
 
     support_contact = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name="Support contact")
     location = models.CharField(max_length=100, verbose_name="Location")
-    attendees = models.PositiveIntegerField(verbose_name="Number of attendees")
+    attendees = models.PositiveIntegerField(verbose_name="Number of attendees", default=1)
     notes = models.TextField(verbose_name="Notes")
 
     class Meta:
@@ -99,6 +99,6 @@ class Event(models.Model):
                        ("filter_events", "Peut filtrer les évennements")]
 
     def __str__(self):
-        return f"{name}"
+        return f"{self.name}"
 
 

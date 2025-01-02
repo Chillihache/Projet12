@@ -23,14 +23,8 @@ def make_authenticated_request(url, method="GET", data=None):
 
         if method.upper() == "GET":
             response = requests.get(url, headers=headers)
-        elif method.upper() == "POST":
-            response = requests.get(url, headers=headers, data=data)
-        elif method.upper() == "PUT":
-            response = requests.get(url, headers=headers, data=data)
-        elif method.upper() == "DELETE":
-            response = requests.get(url, headers=headers, data=data)
         else:
-            raise ValueError("Methode HTTP non supporté")
+            response = getattr(requests, method.lower())(url, headers=headers, data=data)
 
         return response
 
