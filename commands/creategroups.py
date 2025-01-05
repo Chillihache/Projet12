@@ -26,12 +26,14 @@ def creategroups():
             click.secho(f"{group_name} group already exists", fg="yellow")
 
         for codename in permissions:
+            permission = Permission.objects.none
             try:
                 permission = Permission.objects.get(codename=codename)
-                group.permissions.add(permission)
-                click.secho(f"  - Permission '{codename}' added to group '{group_name}'", fg="cyan")
             except Permission.DoesNotExist:
                 click.secho(f"  - Permission '{codename}' not found", fg="red", bold=True)
+
+            group.permissions.add(permission)
+            click.secho(f"  - Permission '{codename}' added to group '{group_name}'", fg="cyan")
 
     click.secho("Groups and permissions successfully configured", fg="green", bold=True)
 

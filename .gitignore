@@ -11,4 +11,4 @@ __pycache__
 db.sqlite3
 migrations/
 .jwt_tokens
-
+jwt_tokens.json
