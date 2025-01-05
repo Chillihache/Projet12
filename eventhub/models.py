@@ -63,7 +63,12 @@ class Client(models.Model):
 
 
 class Contract(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="UUID")
+    contract_number = models.CharField(
+        max_length=50,
+        unique=True,
+        blank=False,
+        null=False,
+    )
 
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, verbose_name="Client")
 
@@ -77,8 +82,16 @@ class Contract(models.Model):
 
     is_signed = models.BooleanField(default=False, verbose_name="Is signed")
 
+    def save(self, *args, **kwargs):
+        if self.contract_number:
+            self.contract_number = self.contract_number.upper()
+        super().save(*args, **kwargs)
+
     class Meta:
         permissions = [("filter_contracts", "Peut filtrer les contrats")]
+
+    def __str__(self):
+        return f"{self.contract_number}"
 
 
 class Event(models.Model):
