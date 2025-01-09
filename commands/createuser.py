@@ -5,12 +5,7 @@ from django.contrib.auth.models import Group
 
 
 @click.command()
-@click.argument("email")
-@click.argument("password")
-@click.argument("employee_number")
-@click.argument("first_name")
-@click.argument("last_name")
-def createuser(email, password, employee_number, first_name, last_name):
+def createuser():
     user = authenticate_user()
 
     if user:
@@ -19,19 +14,30 @@ def createuser(email, password, employee_number, first_name, last_name):
             return
 
         try:
-            if CustomUser.objects.filter(email=email).exists():
-                click.echo(f"Un utilisateur avec l'email {email} existe déjà.")
-                return
-
-            if CustomUser.objects.filter(employee_number=employee_number).exists():
-                click.echo(f"Un utilisateur avec le numéro d'employé {employee_number} existe déjà.")
-                return
-
             groups = Group.objects.values_list("name", flat=True)
 
             if not groups:
                 click.echo("Veuillez configurez les groupes avec la commande : python cli.py creategroups")
                 return
+
+            click.echo("Veuillez renseigner les informaitons suivantes :")
+            email = click.prompt("Email")
+            if CustomUser.objects.filter(email=email).exists():
+                click.echo(f"Un utilisateur avec l'email {email} existe déjà.")
+                return
+
+            password = click.prompt("Mot de passe",
+                                    hide_input=True,
+                                    confirmation_prompt="Veuillez répéter le mot de passe pour confirmation")
+
+            employee_number = click.prompt("Numéro d'employé")
+
+            if CustomUser.objects.filter(employee_number=employee_number).exists():
+                click.echo(f"Un utilisateur avec le numéro d'employé {employee_number} existe déjà.")
+                return
+
+            first_name = click.prompt("Prénom")
+            last_name = click.prompt("Nom")
 
             click.echo("Veuillez choisir un département :")
             groups = list(groups)

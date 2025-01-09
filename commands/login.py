@@ -4,11 +4,19 @@ from eventhub.utils.jwt_tokens import save_tokens, generate_jwt
 from eventhub.models import CustomUser
 
 @click.command()
-@click.argument("email")
-@click.argument("password")
-def login(email, password):
-    try:
-        user = CustomUser.objects.get(email=email)
+def login():
+
+        click.echo("Veuillez entrer les informaitons suivantes :")
+        email = click.prompt("Email")
+
+        try:
+            user = CustomUser.objects.get(email=email)
+
+        except CustomUser.DoesNotExist:
+            click.echo("Cette email n'est pas reconnu")
+            return
+
+        password = click.prompt("Mot de passe", hide_input=True)
 
         if user.check_password(password):
             access_token, refresh_token = generate_jwt(email, password)
@@ -20,6 +28,4 @@ def login(email, password):
         else:
             click.echo("Mot de passe incorrect")
 
-    except CustomUser.DoesNotExist:
 
-        click.echo("Cette email n'est pas reconnu")

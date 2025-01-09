@@ -50,7 +50,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Client(models.Model):
     first_name = models.CharField(max_length=50, verbose_name="First name")
     last_name = models.CharField(max_length=50, verbose_name="Last name")
-    email = models.EmailField(verbose_name="email")
+    email = models.EmailField(verbose_name="email", unique=True)
     company_name = models.CharField(max_length=50, verbose_name="Company name")
 
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Creation date")
@@ -95,16 +95,16 @@ class Contract(models.Model):
 
 
 class Event(models.Model):
-    name = models.CharField(max_length=50, verbose_name="Name")
+    name = models.CharField(max_length=50, verbose_name="Name", unique=True)
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE, verbose_name="Contract")
 
     event_date_start = models.DateTimeField(verbose_name="Event date start")
     event_date_end = models.DateTimeField(verbose_name="Event date end")
 
-    support_contact = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, verbose_name="Support contact")
+    support_contact = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Support contact")
     location = models.CharField(max_length=100, verbose_name="Location")
     attendees = models.PositiveIntegerField(verbose_name="Number of attendees", default=1)
-    notes = models.TextField(verbose_name="Notes")
+    notes = models.TextField(verbose_name="Notes", null=True, blank=True)
 
     class Meta:
         permissions = [("change_event_support_contact",

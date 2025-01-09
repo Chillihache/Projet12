@@ -11,11 +11,13 @@ def creategroups():
                   "change_contract", "filter_contracts",
                   "add_event"],
         "Support": ["view_client", "view_contract", "view_event",
-                    "add_customuser", "change_customuser", "delete_customuser", "view_customuser",
-                    "add_contract", "change_contract",
-                    "change_event", "filter_events"],
+                   "change_event", "filter_events"],
         "Management": ["view_client", "view_contract", "view_event",
-                       "change_event_support_contact", "filter_events"],
+                       "add_customuser", "change_customuser", "delete_customuser", "view_customuser",
+                       "add_contract", "change_contract",
+                       "change_event", "filter_events"],
+
+
     }
 
     for group_name, permissions in groups_permissions.items():
