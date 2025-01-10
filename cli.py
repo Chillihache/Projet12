@@ -6,7 +6,6 @@ import click
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crm.settings")
 django.setup()
 
-from commands.hello import hello
 from commands.creategroups import creategroups
 from commands.login import login
 from commands.createuser import createuser
@@ -28,7 +27,6 @@ from commands.updateevent import updateevent
 def cli():
     pass
 
-cli.add_command(hello)
 cli.add_command(creategroups)
 cli.add_command(login)
 cli.add_command(createuser)

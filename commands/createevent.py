@@ -13,24 +13,24 @@ def createevent():
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.add_event'):
-            click.echo("Vous n'avez pas la permission de créer un évennement")
+            click.secho("Vous n'avez pas la permission de créer un événement.", fg="red")
             return
 
-        click.echo("Veuillez renseigner les champs suivants pour la création de l'évennement :")
+        click.echo("Veuillez renseigner les champs suivants pour la création de l'événement :")
 
         name = click.prompt("Nom")
 
         if Event.objects.filter(name=name).exists():
-            click.echo("Il existe déjà un évenement avec ce nom.")
+            click.secho("Il existe déjà un événement avec ce nom.", fg="red")
             return
 
         contracts = Contract.objects.filter(is_signed=True, client__sales_contact=user)
 
         if len(contracts) == 0:
-            click.echo("Aucun contrat disponibles ! (non signés)")
+            click.secho("Aucun contrat disponibles. (non signés)", fg="red")
             return
 
-        click.echo("Veuillez choisir un contrat (Contrats signés) :")
+        click.echo("Veuillez choisir un contrat (contrats signés) :")
         contrats_str = list(contracts)
         for i, contrats_str in enumerate(contrats_str, start=1):
             click.echo(f"{i}. {contrats_str}")
@@ -41,9 +41,9 @@ def createevent():
             try:
                 contract_choice = int(click.prompt("Entrez le numéro du contrat", type=int))
                 if contract_choice not in range(1, len(contracts) + 1):
-                    click.echo("Choix invalide. Veuillez sélectionner un numéro valide.")
+                    click.secho("Choix invalide. Veuillez sélectionner un numéro valide.", fg="red")
             except ValueError:
-                click.echo("Entrée invalide. Veuillez choisir un contrat.")
+                click.secho("Entrée invalide. Veuillez choisir un contrat.", fg="red")
 
         contract = contracts[contract_choice - 1]
 
@@ -54,25 +54,25 @@ def createevent():
         supports = CustomUser.objects.filter(groups=group_support)
 
         if len(supports) == 0:
-            click.echo("Aucun collaborateur dans le département support ! Le champ 'Contact Support restera vide.")
+            click.secho("Aucun collaborateur dans le département support. Le champ 'Contact Support' restera vide.", fg="yellow")
             support_contact = None
         else:
             supports = list(supports)
-            click.echo("Veuillez choisir un colaborateur du département support a affecter à l'évennement :")
+            click.echo("Veuillez choisir un colaborateur du département support a affecter à l'événement :")
 
             for i, support in enumerate(supports, start=1):
                 click.echo(f"{i}. {support.first_name} {support.last_name}")
 
-            click.echo(f"{len(supports) + 1}. Ne pas assigner de support")
+            click.secho(f"{len(supports) + 1}. Ne pas assigner de support", fg="yellow")
 
             support_choice = None
             while support_choice not in range(1, len(supports) + 2):
                 try:
                     support_choice = int(click.prompt("Votre choix", type=int))
                     if support_choice not in range(1, len(supports) + 2):
-                        click.echo("Choix invalide. Veuillez sélectionner un numéro valide.")
+                        click.secho("Choix invalide. Veuillez sélectionner un numéro valide.", fg="red")
                 except ValueError:
-                    click.echo("Entrée invalide.")
+                    click.secho("Entrée invalide.", fg="red")
 
             if support_choice == len(supports) + 1:
                 support_contact = None
@@ -87,9 +87,9 @@ def createevent():
                     if attendees >= 1:
                         break
                     else:
-                        click.echo("Le nombre d'invités doit être égal ou supérieur à 1.")
+                        click.secho("Le nombre d'invités doit être égal ou supérieur à 1.", fg="red")
                 except ValueError:
-                    click.echo("Entrée invalide. Veuillez entrer un nombre entier.")
+                    click.secho("Entrée invalide. Veuillez entrer un nombre entier.", fg="red")
 
             notes = click.prompt("Informations supplémentaires (Peut être laissé vide)", default="", show_default=False)
 
@@ -106,7 +106,7 @@ def createevent():
 
             event.save()
 
-            click.echo("Evenement créé avec succès !")
+            click.secho("Evénement créé avec succès !", fg="green")
 
 
 

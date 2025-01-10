@@ -9,7 +9,7 @@ def createclient():
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.add_client'):
-            click.echo("Vous n'avez pas la permission de créer un client.")
+            click.secho("Vous n'avez pas la permission de créer un client.", fg="red")
             return
 
         if user.groups.filter(name="Sales").exists():
@@ -23,7 +23,7 @@ def createclient():
             while not email:
                 email = click.prompt("Email")
                 if Client.objects.filter(email=email).exists():
-                    click.echo("Cette email est déjà utilisé par un client.")
+                    click.secho("Cette email est déjà utilisé par un client.", fg="red")
                     email = None
 
             company_name = click.prompt("Nom de l'entrepise")
@@ -36,7 +36,7 @@ def createclient():
 
             client.save()
 
-            click.echo("Le client a été créé avec succès !")
+            click.secho("Le client a été créé avec succès !", fg="green")
 
         else:
-            click.echo("Vous n'êtes pas dans le département commercial")
+            click.secho("Vous n'êtes pas dans le département commercial, vous ne pouvez pas créer un client.", fg="red")

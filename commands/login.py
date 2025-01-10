@@ -6,14 +6,14 @@ from eventhub.models import CustomUser
 @click.command()
 def login():
 
-        click.echo("Veuillez entrer les informaitons suivantes :")
+        click.echo("Veuillez entrer les informations suivantes :")
         email = click.prompt("Email")
 
         try:
             user = CustomUser.objects.get(email=email)
 
         except CustomUser.DoesNotExist:
-            click.echo("Cette email n'est pas reconnu")
+            click.secho("Utilisateur inconnu.", fg="red")
             return
 
         password = click.prompt("Mot de passe", hide_input=True)
@@ -23,9 +23,9 @@ def login():
 
             save_tokens(access_token, refresh_token)
 
-            click.echo(click.style('Connexion réussie et tokens générés !', fg='green'))
+            click.secho("Connexion réussie et tokens générés !", fg="green")
 
         else:
-            click.echo("Mot de passe incorrect")
+            click.secho("Mot de passe incorrect.", fg="red")
 
 

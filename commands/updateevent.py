@@ -14,41 +14,41 @@ def updateevent(name):
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.change_event'):
-            click.echo("Vous n'avez pas la permission de modifier un évennement.")
+            click.secho("Vous n'avez pas la permission de modifier un événement.", fg="red")
             return
 
         event = Event.objects.filter(name=name).first()
 
         if not event:
-            click.echo("Cet évennement n'existe pas.")
+            click.secho("Cet évennement n'existe pas.", fg="red")
             return
 
         if user.groups.filter(name="Support") and user != event.support_contact:
-            click.echo("Vous n'êtes pas en charge de cet évennement")
+            click.secho("Vous n'êtes pas en charge de cet événement.", fg="red")
             return
 
         if user.groups.filter(name="Management"):
             supports = Group.objects.get(name='Support').user_set.all()
             if len(supports) == 0:
-                click.echo("Aucun collaborateur dans le département support !")
+                click.secho("Aucun collaborateur dans le département support.", fg="red")
                 return
             else:
                 supports = list(supports)
-                click.echo("Veuillez choisir un colaborateur du département support a affecter à l'évennement :")
+                click.secho("Veuillez choisir un colaborateur du département support a affecter à l'événement :", fg="red")
 
                 for i, support in enumerate(supports, start=1):
                     click.echo(f"{i}. {support.first_name} {support.last_name}")
 
-                click.echo(f"{len(supports) + 1}. Ne pas assigner de support")
+                click.secho(f"{len(supports) + 1}. Ne pas assigner de support", fg="yellow")
 
                 support_choice = None
                 while support_choice not in range(1, len(supports) + 2):
                     try:
                         support_choice = int(click.prompt("Votre choix", type=int))
                         if support_choice not in range(1, len(supports) + 2):
-                            click.echo("Choix invalide. Veuillez sélectionner un numéro valide.")
+                            click.secho("Choix invalide. Veuillez sélectionner un numéro valide.", fg="red")
                     except ValueError:
-                        click.echo("Entrée invalide.")
+                        click.secho("Entrée invalide.", fg="red")
 
                 if support_choice == len(supports) + 1:
                     support_contact = None
@@ -57,18 +57,18 @@ def updateevent(name):
 
                 event.support_contact = support_contact
                 event.save()
-                click.echo("Contact support modifié avec succès !")
+                click.secho("Contact support modifié avec succès !", fg="green")
 
         else:
-            click.echo(f"Modification des informations de l'évennement {event.name}. "
-                       f"Laissez vides les champs que vous ne souhaitez pas modifier")
+            click.echo(f"Modification des informations de l'événement {event.name}.\n"
+                       "Laissez vides les champs que vous ne souhaitez pas modifier.")
 
             new_name = None
             while not new_name:
                 new_name = click.prompt("Nouveau nom", default=event.name)
                 if Event.objects.filter(name=new_name).exists():
                     if new_name != event.name:
-                        click.echo("Ce nom d'évennement existe déjà")
+                        click.secho("Ce nom d'évennement existe déjà.", fg="red")
                         new_name = None
 
             modify_date_choice = click.confirm("Souhaitez-vous modifier les dates de début et de fin ?")
@@ -88,9 +88,9 @@ def updateevent(name):
                     if new_attendees >= 1:
                         break
                     else:
-                        click.echo("Le nombre d'invités doit être égal ou supérieur à 1.")
+                        click.secho("Le nombre d'invités doit être égal ou supérieur à 1.", fg="red")
                 except ValueError:
-                    click.echo("Entrée invalide. Veuillez entrer un nombre entier.")
+                    click.secho("Entrée invalide. Veuillez entrer un nombre entier.", fg="red")
 
             new_notes = click.prompt("Nouvelles informations supplémentaires", default=event.notes)
 
@@ -103,7 +103,7 @@ def updateevent(name):
 
             event.save()
 
-            click.echo("L'Evenement a été modifié avec succès !")
+            click.secho("L'Evénement a été modifié avec succès !", fg="green")
 
 
 

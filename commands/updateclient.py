@@ -10,20 +10,20 @@ def updateclient(email):
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.change_client'):
-            click.echo("Vous n'avez pas la permission de modifier un contrat.")
+            click.secho("Vous n'avez pas la permission de modifier un client.", fg="red")
             return
 
         client = Client.objects.filter(email=email).first()
 
         if not client:
-            click.echo("Le client n'existe pas.")
+            click.secho("Le client n'existe pas.", fg="red")
             return
 
         if user != client.sales_contact:
-            click.echo("Vous n'êtes pas en charge de ce client.")
+            click.secho("Vous n'êtes pas en charge de ce client.", fg="red")
             return
 
-        click.echo(f"Modification des informations du client {client.first_name} {client.last_name} "
+        click.echo(f"Modification des informations du client {client.first_name} {client.last_name}.\n"
                    f"Laissez vides les champs que vous ne souhaitez pas modifier")
 
         new_first_name = click.prompt("Nouveau prénom", default=client.first_name)
@@ -34,7 +34,7 @@ def updateclient(email):
             new_email = click.prompt("Nouvel email", default=client.email)
             if Client.objects.filter(email=new_email).exists():
                 if new_email != client.email:
-                    click.echo("Cette email est déjà utilisé par un client")
+                    click.secho("Cette email est déjà utilisé par un client.", fg="red")
                     new_email = None
         new_company_name = click.prompt("Nouveau nom d'entrepirse", default=client.company_name)
 
@@ -45,4 +45,4 @@ def updateclient(email):
 
         client.save()
 
-        click.echo("Le client a été modifé avec succès !")
+        click.secho("Le client a été modifé avec succès !", fg="green")

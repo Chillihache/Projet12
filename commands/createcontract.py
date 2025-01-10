@@ -9,7 +9,7 @@ def createcontract():
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.add_contract'):
-            click.echo("Vous n'avez pas la permission de créer un contrat.")
+            click.secho("Vous n'avez pas la permission de créer un contrat.", fg="red")
             return
 
         click.echo("Veuillez renseigner les champs suivants pour la création du contrat :")
@@ -17,7 +17,7 @@ def createcontract():
         contract_number.upper()
 
         if Contract.objects.filter(contract_number=contract_number).exists():
-            click.echo("Un contrat avec ce numéro existe déjà")
+            click.secho("Un contrat avec ce numéro existe déjà.", fg="red")
             return
 
         clients = Client.objects.all()
@@ -32,34 +32,34 @@ def createcontract():
             try:
                 client_choice = int(click.prompt("Entrez le numéro du client", type=int))
                 if client_choice not in range(1, len(clients) + 1):
-                    click.echo("Choix invalide. Veuillez sélectionner un numéro valide.")
+                    click.secho("Choix invalide. Veuillez sélectionner un numéro valide.", fg="red")
             except ValueError:
-                click.echo("Entrée invalide. Veuillez choisir un client.")
+                click.secho("Entrée invalide. Veuillez choisir un client.", fg="red")
 
         client = clients[client_choice - 1]
 
         total_amount = None
-        while not total_amount:
+        while total_amount is None:
             try:
                 total_amount = click.prompt("Montant total")
                 total_amount = float(total_amount)
                 if len(str(total_amount).split(".")[1]) > 2:
-                    click.echo("Le montant doit comporter maximum deux chiffres après la virgule.")
+                    click.secho("Le montant doit comporter au maximum deux chiffres après la virgule.", fg="red")
                     total_amount = None
             except ValueError:
-                click.echo("Montant incorrect")
+                click.secho("Montant incorrect", fg="red")
                 total_amount = None
 
         remaining_amount = None
-        while not remaining_amount:
+        while remaining_amount is None:
             try:
                 remaining_amount = click.prompt("Montant restant")
                 remaining_amount = float(remaining_amount)
                 if len(str(remaining_amount).split(".")[1]) > 2:
-                    click.echo("Le montant doit comporter maximum deux chiffres après la virgule.")
+                    click.secho("Le montant doit comporter maximum deux chiffres après la virgule.", fg="red")
                     remaining_amount = None
             except ValueError:
-                click.echo("Montant incorrect")
+                click.secho("Montant incorrect", fg="red")
                 remaining_amount = None
 
 
@@ -75,6 +75,6 @@ def createcontract():
 
         contract.save()
 
-        click.echo("Le contrat a été créé avec succès")
+        click.secho("Le contrat a été créé avec succès !", fg="green")
 
 

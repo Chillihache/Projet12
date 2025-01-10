@@ -1,5 +1,4 @@
 import json
-
 import click
 import requests
 import jwt
@@ -70,19 +69,19 @@ def refresh_access_token(refresh_token):
 
         save_tokens(new_access_token, new_refresh_token)
 
-        click.echo("Le jeton d'accès a été rafraîchi !")
+        click.secho("Le jeton d'accès a été rafraîchi !", fg="green")
         return new_access_token
 
     except jwt.ExpiredSignatureError:
-        click.echo("Le refresh token a expiré. Veuillez vous reconnecter.")
+        click.secho("Le jeton de rafraichissement a expiré. Veuillez vous reconnecter.", fg="red")
         return None
 
     except jwt.InvalidTokenError:
-        click.echo("Le refresh token est invalide. Veuillez vous reconnecter.")
+        click.secho("Le jeton de rafraichissement est invalide. Veuillez vous reconnecter.", fg="red")
         return None
 
     except CustomUser.DoesNotExist:
-        click.echo("L'utilisateur associé au refresh token n'existe pas. Veuillez vous reconnecter.")
+        click.secho("L'utilisateur associé au jeton de rafraichissement n'existe pas. Veuillez vous reconnecter.", fg="red")
         return None
 
 
@@ -90,7 +89,7 @@ def authenticate_user():
     tokens = get_tokens_from_file()
 
     if not tokens:
-        click.echo("Aucun token trouvé. Veuillez vous connecter.")
+        click.secho("Aucun jetons trouvés. Veuillez vous connecter.", fg="red")
         return None
 
     access_token = tokens.get("access")
@@ -107,15 +106,15 @@ def authenticate_user():
         if refresh_access_token(refresh_token):
             return authenticate_user()
         else:
-            click.echo("Le token a expiré et n'a pas pu être rafraîchi. Veuillez vous reconnecter.")
+            click.secho("Le jeton a expiré et n'a pas pu être rafraîchi. Veuillez vous reconnecter.", fg="red")
             return None
 
     except jwt.InvalidTokenError:
-        click.echo("Le token est invalide. Veuillez vous reconnecter.")
+        click.secho("Le jeton est invalide. Veuillez vous reconnecter.", fg="red")
         return None
 
     except CustomUser.DoesNotExist:
-        click.echo("L'utilisateur associé au token n'existe pas. Veuillez vous reconnecter.")
+        click.secho("L'utilisateur associé au token n'existe pas. Veuillez vous reconnecter.", fg="red")
         return None
 
 

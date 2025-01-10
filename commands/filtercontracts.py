@@ -1,5 +1,7 @@
 import click
+from rich.console import Console
 from eventhub.utils.jwt_tokens import authenticate_user
+from eventhub.utils.create_table import create_contracts_table
 from eventhub.models import Contract
 
 
@@ -9,8 +11,10 @@ def filtercontracts():
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.filter_contract'):
-            click.echo("Vous n'avez pas la permission de filtrer les contrats")
+            click.secho("Vous n'avez pas la permission de filtrer les contrats.", fg="red")
             return
+
+        console = Console()
 
         click.echo("Choisissez votre filtre :\n"
                    "1 - Contrats non signés \n"
@@ -25,12 +29,13 @@ def filtercontracts():
                     break
             except ValueError:
                 pass
-            click.echo("Choix invalide.")
+            click.secho("Choix invalide.", fg="red")
 
         if filter_choice == 1:
             contracts = Contract.objects.filter(is_signed=False)
         else:
             contracts = Contract.objects.filter(remaining_amount__gt=0)
 
-        click.echo(contracts)
+        table = create_contracts_table(contracts)
+        console.print(table)
 

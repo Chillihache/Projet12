@@ -10,19 +10,19 @@ def deleteuser(email):
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.delete_customuser'):
-            click.echo("Vous n'avez pas la permission de supprimer un utilisateur")
+            click.secho("Vous n'avez pas la permission de supprimer un utilisateur.", fg="red")
             return
 
         user_to_delete = CustomUser.objects.filter(email=email).first()
 
         if not user_to_delete:
-            click.echo("Cet email ne correspond a aucun utilisateur")
+            click.secho("Cet email ne correspond a aucun utilisateur.", fg="red")
             return
 
         if not click.confirm(f"Êtes-vous sûr de vouloir supprimer l'utilisateur {user_to_delete.first_name} {user_to_delete.last_name} ?"):
-            click.echo("Suppression annulée.")
+            click.secho("Suppression annulée.", fg="yellow")
             return
 
         user_to_delete.delete()
 
-        click.echo("L'utilisateur a été supprimé !")
+        click.secho("L'utilisateur a été supprimé !", fg="red")

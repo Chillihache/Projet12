@@ -10,17 +10,17 @@ def updateuser(email):
 
     if user:
         if not user.is_superuser and not user.has_perm('eventhub.change_customuser'):
-            click.echo("Vous n'avez pas la permission de mettre à jour un utilisateur.")
+            click.secho("Vous n'avez pas la permission de modifier un utilisateur.", fg="red")
             return
 
         user_to_update = CustomUser.objects.filter(email=email).first()
 
         if not user_to_update:
-            click.echo("Cet email ne correspond à aucun utilisateur.")
+            click.secho("Cet email ne correspond à aucun utilisateur.", fg="red")
             return
 
-        click.echo(f"Modification des informations de l'utilisateur {user_to_update.first_name} {user_to_update.last_name}."
-                   f"Laissez vides les champs que vous ne souhaitez pas modifier.")
+        click.echo(f"Modification des informations de l'utilisateur {user_to_update.first_name} {user_to_update.last_name}.\n"
+                   "Laissez vides les champs que vous ne souhaitez pas modifier.")
 
         new_email = click.prompt("Nouvel email", default=user_to_update.email)
         new_first_name = click.prompt("Nouveau prénom", default=user_to_update.first_name)
@@ -37,7 +37,7 @@ def updateuser(email):
                 user_to_update.set_password(new_password)
             user_to_update.save()
 
-            click.echo(f"Les informations de l'utilisateur {user_to_update.email} ont été mises à jour avec succès.")
+            click.secho(f"Les informations de l'utilisateur {user_to_update.first_name} {user_to_update.last_name} ont été mises à jour avec succès.", fg="green")
 
         except Exception as e:
-            click.echo(f"Erreur lors de la mise à jour de l'utilisateur : {e}")
+            click.secho(f"Erreur lors de la mise à jour de l'utilisateur : {e}", fg="red")
