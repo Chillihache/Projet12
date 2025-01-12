@@ -14,10 +14,10 @@ def getclients():
             click.secho("Vous n'avez pas la permission de voir les clients.", fg="red")
             return
 
-    clients = Client.objects.all()
-    console = Console()
-    table = create_clients_table(clients)
+        clients = Client.objects.all()
+        console = Console()
+        table = create_clients_table(clients)
 
-    console.print(table)
+        console.print(table)
 
 

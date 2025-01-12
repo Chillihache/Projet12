@@ -4,9 +4,10 @@ import requests
 import jwt
 import datetime
 from eventhub.models import CustomUser
+from decouple import config
 
 
-SECRET_KEY = "rAz9X1C_EDpak7YHpbi04C2hWw1jS8PtnDYDgzL_UcY"
+SECRET_KEY = config('TOKEN_SECRET_KEY')
 
 TOKENS_FILE = "jwt_tokens.json"
 

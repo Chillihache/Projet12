@@ -56,11 +56,13 @@ def create_clients_table(clients):
     table.add_column("Email")
     table.add_column("Nom de l'entreprise")
     table.add_column("Date de création")
+    table.add_column("Date de dernière modification")
     table.add_column("Contact commercial")
 
     for client in clients:
         sales_contact_str = str(client.sales_contact) if client.sales_contact else "Non attribué"
         table.add_row(client.last_name, client.first_name, client.email, client.company_name,
-                      client.creation_date.strftime("%Y-%m-%d %H:%M:%S"), sales_contact_str)
+                      client.creation_date.strftime("%Y-%m-%d %H:%M:%S"),
+                      client.update_date.strftime("%Y-%m-%d %H:%M:%S"), sales_contact_str)
 
     return table

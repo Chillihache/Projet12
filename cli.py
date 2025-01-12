@@ -2,7 +2,6 @@ import os
 import django
 import click
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "crm.settings")
 django.setup()
 
@@ -23,9 +22,11 @@ from commands.filtercontracts import filtercontracts
 from commands.createevent import createevent
 from commands.updateevent import updateevent
 
+
 @click.group()
 def cli():
     pass
+
 
 cli.add_command(creategroups)
 cli.add_command(login)
