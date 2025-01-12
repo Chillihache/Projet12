@@ -37,6 +37,8 @@ Install dependencies :
 
 To set up the data base :
 
+    python manage.py makemigrations
+
     python manage.py migrate
 
 Create the groups :
