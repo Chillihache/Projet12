@@ -17,7 +17,8 @@ In a terminal, clone this repository using :
 
     git clone https://github.com/Chillihache/Projet12.git
 
-Complete .env file with your MySQL database informations, secret key for django and JWT and your DNS-Sentry.
+Create a database in MySQL and a django project in Sentry.
+Then .env file with your MySQL database informations, secret key for django and JWT and your DNS-Sentry.
 
 Create a virtual environnement:
 
