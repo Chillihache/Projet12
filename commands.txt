@@ -1,0 +1,20 @@
+python manage.py createsuperuser
+python cli.py creategroups
+
+python cli.py createclient
+python cli.py createcontract
+python cli.py createevent
+python cli.py createuser
+python cli.py deleteuser "user_to_delete_email"
+python cli.py filtercontracts
+python cli.py filterevents
+python cli.py getclients
+python cli.py getcontracts
+python cli.py getevents
+python cli.py login
+python cli.py updateclient "client_to_update_email"
+python cli.py updatecontreact "contract_to_update_contract_number"
+python cli.py updateevent "event_to_update_name"
+python cli.py updateuser "user_to_update_email"
+
+
