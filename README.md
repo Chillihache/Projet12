@@ -22,6 +22,10 @@ Complete .env file with your MySQL database informations, secret key for django 
 Create a virtual environnement:
 
     python -m venv env
+
+Activate the virtual environment :
+
+    env\Scripts\activate.bat
     
 Enter the project :
 
@@ -30,10 +34,6 @@ Enter the project :
 Install dependencies :
 
     pip install -r requirements.txt
-
-Activate the virtual environment :
-
-    env\Scripts\activate.bat
 
 To set up the data base :
 
