@@ -19,7 +19,7 @@ In a terminal, clone this repository using :
 
 Create a database in MySQL and a django project in Sentry.
 
-Then .env file with your MySQL database informations, secret key for django and JWT and your DNS-Sentry.
+Then complete the .env file with your MySQL database informations, secret key for django and JWT and your DNS-Sentry.
 
 Create a virtual environnement:
 
