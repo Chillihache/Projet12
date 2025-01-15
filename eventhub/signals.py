@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
-from sentry_sdk import capture_message
+from sentry_sdk import capture_message, flush
 from eventhub.models import Client, Event, CustomUser, Contract
 
 
@@ -23,6 +23,7 @@ def validate_support_contact_group(sender, instance, **kwargs):
 def sentry_alert_user_saved(sender, instance, created, **kwargs):
     action = "créé" if created else "modifié"
     capture_message(f"Le collaborateur {instance.first_name} {instance.last_name} a été {action}")
+    flush(timeout=2)
 
 
 @receiver(pre_save, sender=Contract)
@@ -31,6 +32,8 @@ def sentry_alert_contract_signed(sender, instance, **kwargs):
         contract = Contract.objects.get(id=instance.id)
         if not contract.is_signed and instance.is_signed:
             capture_message(f"Le contrat {instance.contract_number} a été signé.")
+            flush(timeout=2)
     except Contract.DoesNotExist:
         if instance.is_signed:
             capture_message(f"Le contrat {instance.contract_number} a été signé.")
+            flush(timeout=2)
