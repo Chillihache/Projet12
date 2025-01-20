@@ -10,7 +10,7 @@ def filtercontracts():
     user = authenticate_user()
 
     if user:
-        if not user.is_superuser and not user.has_perm('eventhub.filter_contract'):
+        if not user.is_superuser and not user.has_perm('eventhub.filter_contracts'):
             click.secho("Vous n'avez pas la permission de filtrer les contrats.", fg="red")
             return
 
